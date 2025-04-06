@@ -1,0 +1,32 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* App.css */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  object-fit: cover;  /* Ensures image covers its box */
+}
+
+.ant-card-body {
+  padding: 12px;
+}
+
+.ant-btn-primary {
+  background-color: #1d72b8;
+  border-color: #1d72b8;
+}
+
+.ant-btn-primary:hover {
+  background-color: #155a8a;
+  border-color: #155a8a;
+}
+
