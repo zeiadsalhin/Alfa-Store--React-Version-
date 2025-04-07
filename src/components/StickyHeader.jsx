@@ -50,7 +50,7 @@ const StickyHeader = () => {
           </NavLink>
         </div>
 
-        <Menu mode="horizontal" style={{ background: 'transparent', border: 'none' }}>
+        <Menu mode="horizontal" style={{ background: 'transparent', border: 'none', minWidth: cartQuantity > 0 ? 170: 130 }}>
           <Menu.Item key="1">
             <NavLink
               to="/"
@@ -62,19 +62,22 @@ const StickyHeader = () => {
             </NavLink>
           </Menu.Item>
 
-          <Menu.Item key="2" style={{ minWidth: 50 }}>
+          <Menu.Item key="2" 
+          // style={{ minWidth: cartQuantity > 0 ? 98 : 62 }}
+          >
             <NavLink
               to="/cart"
               style={({ isActive }) => ({
                 color: isActive ? '#ff9900' : 'white',
                 textDecoration: 'none',
+                textAlign: 'center',
                 display: 'flex',
                 alignItems: 'center',
-                gap: 6,
+                gap: 0,
               })}
             >
               <span>Cart</span>
-              <Badge count={cartQuantity} overflowCount={99} offset={[5, -10]} />
+              <Badge count={cartQuantity} overflowCount={99} offset={[4, -10]} />
             </NavLink>
           </Menu.Item>
         </Menu>

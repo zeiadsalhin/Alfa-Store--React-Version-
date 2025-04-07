@@ -16,7 +16,7 @@ const Cart = () => {
       </Helmet>
 
       <Layout style={{ width: '100%' }}>
-        <Content className="p-8 flex flex-col w-full">
+        <Content className="p-4 flex flex-col w-full">
           <h1 className="text-xl font-semibold mb-4">Your Cart</h1>
 
           {cart.length === 0 ? (
