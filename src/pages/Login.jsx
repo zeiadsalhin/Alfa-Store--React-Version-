@@ -35,7 +35,7 @@ const Login = () => {
       localStorage.setItem('token', token);
       localStorage.setItem('currentUser', JSON.stringify(user));
 
-      navigate('/');
+      navigate('/account');
     } catch (error) {
       setFormError({ email: 'Something went wrong. Please try again.' });
       console.error('Login error:', error);

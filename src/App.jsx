@@ -11,7 +11,9 @@ import Footer from './components/Footer';  // Import Footer component
 import Checkout from './pages/Checkout';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
-
+import Account from './pages/Account';
+import AuthRoute from './middleware/AuthRoute';
+import GuestRoute from './middleware/GuestRoute';
 const { Content } = Layout;
 
 const App = () => {
@@ -30,8 +32,18 @@ const App = () => {
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/checkout" element={<Checkout />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/login" element={<Login />} />
+            {/* Protected Route */}
+            <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
+            <Route path="/signup" element={<GuestRoute><Signup /></GuestRoute>} />
+            {/* Protected Route */}
+            <Route
+              path="/account"
+              element={
+                <AuthRoute>
+                  <Account />
+                </AuthRoute>
+              }
+            />
           </Routes>
         </Content>
         <Footer />
