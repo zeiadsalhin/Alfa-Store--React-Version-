@@ -14,6 +14,15 @@ import Login from './pages/Login';
 import Account from './pages/Account';
 import AuthRoute from './middleware/AuthRoute';
 import GuestRoute from './middleware/GuestRoute';
+import DashboardLayout from './admin/DashboardLayout';
+import DashboardHome from './admin/pages/DashboardHome';
+import Branches from './admin/pages/Branches';
+import Managers from './admin/pages/Managers';
+import Products from './admin/pages/Products';
+import Orders from './admin/pages/Orders';
+import Sales from './admin/pages/Sales';
+import Users from './admin/pages/Users';
+
 const { Content } = Layout;
 
 const App = () => {
@@ -44,6 +53,17 @@ const App = () => {
                 </AuthRoute>
               }
             />
+            {/* Admin Routes */}
+            <Route path="/admin" element={<DashboardLayout />}>
+                <Route index element={<DashboardHome />} />
+                <Route path="branches" element={<Branches />} />
+                <Route path="managers" element={<Managers />} />
+                <Route path="products" element={<Products />} />
+                <Route path="orders" element={<Orders />} />
+                <Route path="sales" element={<Sales />} />
+                <Route path="users" element={<Users />} />
+              </Route>
+
           </Routes>
         </Content>
         <Footer />
