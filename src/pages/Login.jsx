@@ -3,6 +3,7 @@ import { Form, Input, Button, Card, Typography } from 'antd';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import bcrypt from 'bcryptjs';
+import { generateJWT } from '../utils/jwt'; // Import the JWT sign function
 
 const { Title } = Typography;
 
@@ -31,11 +32,20 @@ const Login = () => {
         return;
       }
 
-      const token = btoa(`${user.email}:${Date.now()}`);
-      localStorage.setItem('token', token);
-      localStorage.setItem('currentUser', JSON.stringify(user));
+      // Create JWT token for the user with a payload containing the necessary data
+      const payload = user ;
 
-      navigate('/account');
+      // Call the signJWT utility function to generate the JWT
+      const token = await generateJWT(payload);
+
+      // Store the token in localStorage
+      localStorage.setItem('token', token);
+
+      // Store the current user details if needed
+      localStorage.setItem('currentUser', JSON.stringify(payload));
+
+      // Redirect to the account page
+      // navigate('/account');
     } catch (error) {
       setFormError({ email: 'Something went wrong. Please try again.' });
       console.error('Login error:', error);

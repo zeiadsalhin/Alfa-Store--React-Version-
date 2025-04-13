@@ -22,7 +22,13 @@ const Signup = () => {
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
-      const newUser = { id: Date.now(), username, email, password: hashedPassword };
+      const newUser = { 
+        id: Date.now(), 
+        username, email, 
+        password: hashedPassword, 
+        role: 'admin', // default role 
+      };
+
       users.push(newUser);
       localStorage.setItem('users', JSON.stringify(users));
 

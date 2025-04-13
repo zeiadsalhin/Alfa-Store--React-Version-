@@ -14,7 +14,8 @@ import Login from './pages/Login';
 import Account from './pages/Account';
 import AuthRoute from './middleware/AuthRoute';
 import GuestRoute from './middleware/GuestRoute';
-import DashboardLayout from './admin/DashboardLayout';
+import AdminRoute from './middleware/AdminRoute';
+import Unauthorized from './pages/Unauthorized'; // Unauthorized page
 import DashboardHome from './admin/pages/DashboardHome';
 import Branches from './admin/pages/Branches';
 import Managers from './admin/pages/Managers';
@@ -53,8 +54,10 @@ const App = () => {
                 </AuthRoute>
               }
             />
+            {/* Unauthorized Page */}
+            <Route path="/unauthorized" element={<Unauthorized />} />
             {/* Admin Routes */}
-            <Route path="/admin" element={<DashboardLayout />}>
+            <Route path="/admin" element={<AdminRoute />}>
                 <Route index element={<DashboardHome />} />
                 <Route path="branches" element={<Branches />} />
                 <Route path="managers" element={<Managers />} />
