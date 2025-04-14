@@ -14,8 +14,7 @@ const AuthRoute = ({ children }) => {
         const decodedUser = await verifyJWT(token); // Verify the JWT using the utility function
         if (decodedUser) {
           setUser(decodedUser); // Set the user state if the token is valid
-          console.log('User verified:', decodedUser); // Log the verified user
-          
+          // console.log('User verified:', decodedUser); // Log the verified user
         }
       }
       setLoading(false); // Once verification is done, set loading to false
