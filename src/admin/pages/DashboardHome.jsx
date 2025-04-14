@@ -1,4 +1,4 @@
-import { Card, Col, Row, Typography } from 'antd';
+import { Card, Col, Row, Typography, Button } from 'antd';
 import {
   BarChart,
   Bar,
@@ -23,11 +23,14 @@ import {
   ArrowUpOutlined,
   ArrowDownOutlined
 } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 
 const { Title } = Typography;
 
 const DashboardHome = () => {
+  const navigate = useNavigate();
+
   const salesData = [
     { month: 'Jan', sales: 4000, revenue: 2400 },
     { month: 'Feb', sales: 3000, revenue: 1398 },
@@ -54,6 +57,14 @@ const DashboardHome = () => {
 
   const COLORS = ['#52c41a', '#faad14', '#f5222d', '#13c2c2'];
 
+  const handleLogout = () => {
+    // Remove token and user info from localStorage
+    localStorage.removeItem('token');
+    localStorage.removeItem('currentUser');
+    // Redirect to login page
+    navigate('/login');
+  };
+
   return (
     <>
       <Helmet>
@@ -63,6 +74,15 @@ const DashboardHome = () => {
 
       <div>
         <Title level={3}>Welcome back, Admin 👋</Title>
+
+        {/* Logout Button */}
+        <Button
+          danger
+          onClick={handleLogout}
+          style={{ marginBottom: '20px' }}
+          >
+          Logout
+        </Button>
 
         <Row gutter={[16, 16]} className="my-6">
           <Col xs={24} sm={12} md={6}>

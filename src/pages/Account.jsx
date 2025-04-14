@@ -9,6 +9,7 @@ import ChangePassword from '../components/account/ChangePassword';
 import { Helmet } from 'react-helmet';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { verifyJWT } from './../utils/jwt'; // Import your JWT utils (where `verifyJWT` is defined)
 
 const { Title, Text } = Typography;
 const { Panel } = Collapse;
@@ -18,18 +19,32 @@ const Account = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('currentUser');
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch {
-        console.error('Failed to parse user from localStorage');
+    const fetchUser = async () => {
+      const storedToken = localStorage.getItem('token');
+      if (storedToken) {
+        try {
+          const payload = await verifyJWT(storedToken); // Wait for the JWT verification to complete
+          if (payload) {
+            setUser(payload); // Set user state to the decoded JWT payload
+          } else {
+            localStorage.removeItem('token'); // Remove invalid token
+            navigate('/login'); // Redirect to login if verification fails
+          }
+        } catch (error) {
+          console.error('JWT verification failed:', error);
+          localStorage.removeItem('token');
+          navigate('/login');
+        }
+      } else {
+        navigate('/login'); // Redirect to login if no token is found
       }
-    }
-  }, []);
+    };
+
+    fetchUser(); // Call the async function to verify the JWT and set the user
+  }, [navigate]);
 
   const handleSignOut = () => {
-    localStorage.removeItem('currentUser');
+    localStorage.removeItem('token');
     navigate('/login');
   };
 

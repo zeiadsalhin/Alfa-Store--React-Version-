@@ -41,11 +41,8 @@ const Login = () => {
       // Store the token in localStorage
       localStorage.setItem('token', token);
 
-      // Store the current user details if needed
-      localStorage.setItem('currentUser', JSON.stringify(payload));
-
       // Redirect to the account page
-      // navigate('/account');
+      navigate('/account');
     } catch (error) {
       setFormError({ email: 'Something went wrong. Please try again.' });
       console.error('Login error:', error);
