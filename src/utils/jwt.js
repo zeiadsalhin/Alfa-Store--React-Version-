@@ -4,15 +4,24 @@ const secretKey = new TextEncoder().encode(import.meta.env.VITE_SECRET_JWT); // 
 
 // Function to generate JWT
 export const generateJWT = async (payload) => {
+    if (!window.crypto || !window.crypto.subtle) {
+        console.error('❌ Web Crypto not supported in this environment');
+        return null;
+    }
+
     try {
+        const secret = import.meta.env.VITE_SECRET_JWT;
+        console.log('JWT Secret:', secret);
+
+        const key = new TextEncoder().encode(secret);
         const jwt = await new SignJWT(payload)
-            .setProtectedHeader({ alg: 'HS256', typ: 'JWT' }) // Set the JWT header
-            .setExpirationTime('7d') // Set expiration time
-            .sign(secretKey);
+            .setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
+            .setExpirationTime('7d')
+            .sign(key);
 
         return jwt;
     } catch (error) {
-        console.error('Error generating JWT token:', error);
+        console.error('❌ Error generating JWT token:', error);
         return null;
     }
 };
