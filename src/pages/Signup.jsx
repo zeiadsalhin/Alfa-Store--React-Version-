@@ -56,7 +56,7 @@ const Signup = () => {
   };
 
   return (
-    <div className="py-28 flex justify-center items-center bg-gray-100">
+    <div className="py-28 flex justify-center items-center bg-gray-100 px-5">
       <Card className="w-full max-w-md shadow-lg">
         <Title level={2}>Create an Account</Title>
         <Form layout="vertical" onFinish={onFinish}>
