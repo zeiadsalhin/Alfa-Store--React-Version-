@@ -12,6 +12,7 @@ import Checkout from './pages/Checkout';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
 import Account from './pages/Account';
+import PageNotFound from './pages/PageNotFound';
 import AuthRoute from './middleware/AuthRoute';
 import GuestRoute from './middleware/GuestRoute';
 import AdminRoute from './middleware/AdminRoute';
@@ -66,7 +67,8 @@ const App = () => {
                 <Route path="sales" element={<Sales />} />
                 <Route path="users" element={<Users />} />
               </Route>
-
+            {/* Page Not Found (Wildcard Route) */}
+            <Route path="*" element={<PageNotFound />} />
           </Routes>
         </Content>
         <Footer />
