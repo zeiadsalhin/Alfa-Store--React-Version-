@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import DashboardLayout from '../admin/DashboardLayout';
+import { Spin } from 'antd';
 import { verifyJWT } from '../utils/jwt'; // Import the verifyJWT utility
 
 const AdminRoute = () => {
@@ -30,7 +31,11 @@ const AdminRoute = () => {
   }, [token]);
 
   if (loading) {
-    return <div>Loading...</div>; // You can show a loader while verifying the token
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '70vh' }}>
+        <Spin size="large" tip="Loading..." />
+      </div>
+    );
   }
 
   if (!isAdmin) {

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
+import { Spin } from 'antd';
 import { verifyJWT } from '../utils/jwt'; // Import the verifyJWT utility
 
 const AuthRoute = ({ children }) => {
@@ -24,7 +25,11 @@ const AuthRoute = ({ children }) => {
   }, [token]);
 
   if (loading) {
-    return <div>Loading...</div>; // You can show a loader while verifying the token
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '70vh' }}>
+        <Spin size="large" tip="Loading..." />
+      </div>
+    );
   }
 
   if (!user) {
