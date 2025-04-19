@@ -10,10 +10,7 @@ export const generateJWT = async (payload) => {
     }
 
     try {
-        const secret = import.meta.env.VITE_SECRET_JWT;
-        console.log('JWT Secret:', secret);
-
-        const key = new TextEncoder().encode(secret);
+        const key = secretKey;
         const jwt = await new SignJWT(payload)
             .setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
             .setExpirationTime('7d')
