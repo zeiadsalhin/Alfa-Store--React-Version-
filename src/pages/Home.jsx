@@ -1,5 +1,6 @@
-import { useState, useRef } from 'react';
-import { Row, Col, Layout, Spin, Input, Space, Select, Button, Divider } from 'antd';
+import { useState, useRef, useEffect } from 'react';
+import { Row, Col, Layout, Spin, Input, Space, Select, FloatButton, Divider, Button } from 'antd';
+import { ArrowUpOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
 import ProductCard from '../components/ProductCard';
 import { Helmet } from 'react-helmet';
 import { useQuery } from '@tanstack/react-query';
@@ -13,19 +14,19 @@ const { Option } = Select;
 const Home = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [viewMode, setViewMode] = useState('grid'); // slider, grid, list
-  const [sortBy, setSortBy] = useState('default'); // Sort options: default, price-low-high, price-high-low, rating-high-low
-  const [autoSlide, setAutoSlide] = useState(true); // Auto slide for carousel
+  const [viewMode, setViewMode] = useState('grid');
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const [sortBy, setSortBy] = useState('default');
+  const [autoSlide, setAutoSlide] = useState(true);
   const sliderRef = useRef(null);
 
-  // Fetch products with TanStack Query
   const { data: products = [], isLoading } = useQuery({
     queryKey: ['products'],
     queryFn: async () => {
       const res = await fetch('https://fakestoreapi.com/products');
       return res.json();
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes cache
+    staleTime: 5 * 60 * 1000,
   });
 
   const handleSearch = (e) => {
@@ -46,7 +47,6 @@ const Home = () => {
       selectedCategory ? product.category === selectedCategory : true
     );
 
-  // Sort products based on selected sort option
   const sortedProducts = filteredProducts.sort((a, b) => {
     if (sortBy === 'price-low-high') {
       return a.price - b.price;
@@ -55,7 +55,7 @@ const Home = () => {
     } else if (sortBy === 'rating-high-low') {
       return b.rating.rate - a.rating.rate;
     }
-    return 0; // default
+    return 0;
   });
 
   const categories = [...new Set(products.map((product) => product.category))];
@@ -66,9 +66,9 @@ const Home = () => {
     speed: 500,
     slidesToShow: 4,
     slidesToScroll: 1,
-    arrows: true,
+    arrows: false, // we will create custom arrows outside
     autoplay: autoSlide,
-    autoplaySpeed: 3000, // Auto slide every 3 seconds
+    autoplaySpeed: 3000,
     responsive: [
       {
         breakpoint: 1024,
@@ -83,6 +83,27 @@ const Home = () => {
         settings: { slidesToShow: 1 }
       }
     ]
+  };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 300) {
+        setShowScrollTop(true);
+      } else {
+        setShowScrollTop(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handlePrev = () => {
+    sliderRef.current?.slickPrev();
+  };
+
+  const handleNext = () => {
+    sliderRef.current?.slickNext();
   };
 
   return (
@@ -154,18 +175,54 @@ const Home = () => {
               <Spin size="large" style={{ display: 'block', margin: '0 auto' }} />
             ) : (
               <>
-                {/* Featured Products Slider */}
-                <section style={{ background: '#f8f8f8', padding: '20px 0', borderRadius: '8px' }}>
+                {/* Featured Products with Custom Arrows */}
+                <section style={{ background: '#f8f8f8', padding: '20px 0', borderRadius: '8px', position: 'relative' }}>
                   <h2 style={{
                     textAlign: 'center', marginBottom: '20px', color: '#99050d', fontSize: '2rem', fontWeight: 'bold'
                   }}>Featured Products</h2>
-                  <Slider {...settings} ref={sliderRef}>
-                    {sortedProducts.slice(0, 8).map((product) => (
-                      <div key={product.id} style={{ padding: '0 10px' }}>
-                        <ProductCard product={product} />
-                      </div>
-                    ))}
-                  </Slider>
+
+                  <div style={{ position: 'relative'}}>
+                    {/* Left Arrow */}
+                    <Button
+                      type="primary"
+                      shape="circle"
+                      icon={<LeftOutlined />}
+                      size="large"
+                      onClick={handlePrev}
+                      style={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: 0,
+                        transform: 'translateY(-50%)',
+                        zIndex: 2,
+                      }}
+                    />
+                    
+                    {/* Right Arrow */}
+                    <Button
+                      type="primary"
+                      shape="circle"
+                      icon={<RightOutlined />}
+                      size="large"
+                      onClick={handleNext}
+                      style={{
+                        position: 'absolute',
+                        top: '50%',
+                        right: 0,
+                        transform: 'translateY(-50%)',
+                        zIndex: 2,
+                      }}
+                    />
+
+                    {/* Slider */}
+                    <Slider {...settings} ref={sliderRef}>
+                      {sortedProducts.slice(0, 8).map((product) => (
+                        <div key={product.id} className='p-1'>
+                          <ProductCard product={product} />
+                        </div>
+                      ))}
+                    </Slider>
+                  </div>
                 </section>
 
                 <Divider />
@@ -217,6 +274,10 @@ const Home = () => {
                 </section>
 
                 <Divider />
+                
+                <h2 style={{
+                    textAlign: 'center', marginBottom: '20px', color: '#0066cc', fontSize: '2rem', fontWeight: 'bold'
+                  }}>More Products</h2>
 
                 {/* View Mode Content */}
                 {viewMode === 'grid' && (
@@ -238,7 +299,7 @@ const Home = () => {
                       <ProductCard
                         key={product.id}
                         product={product}
-                        listView // Pass a prop to style for list view
+                        listView
                       />
                     ))}
                   </Space>
@@ -248,6 +309,15 @@ const Home = () => {
           </Space>
         </Content>
       </Layout>
+
+      {showScrollTop && (
+        <FloatButton
+          icon={<ArrowUpOutlined />}
+          type="primary"
+          style={{ right: 24, bottom: 24 }}
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        />
+      )}
     </>
   );
 };

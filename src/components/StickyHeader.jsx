@@ -98,51 +98,60 @@ const StickyHeader = () => {
             border: 'none',
             minWidth: cartQuantity > 0 ? 230 : 185,
           }}
-        >
-          <Menu.Item key="home">
-            <NavLink
-              to="/"
-              style={({ isActive }) => ({
-                color: isActive ? '#ff9900' : 'white',
-              })}
-            >
-              Home
-            </NavLink>
-          </Menu.Item>
-
-          <Menu.Item key="cart">
-            <NavLink
-              to="/cart"
-              style={({ isActive }) => ({
-                color: isActive ? '#ff9900' : 'white',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 6,
-                textDecoration: 'none',
-              })}
-            >
-              <span>Cart</span>
-              <Badge count={cartQuantity} overflowCount={99} offset={[4, -10]} />
-            </NavLink>
-          </Menu.Item>
-
-          {!user ? (
-            <Menu.Item key="login">
-              <NavLink to="/login" style={{ color: 'white' }}>
-                <LoginOutlined style={{ fontSize: '18px' }} />
-              </NavLink>
-            </Menu.Item>
-          ) : (
-            <Menu.Item key="user">
-              <Dropdown overlay={userMenu} placement="bottomRight">
-                <Button
-                  type="text"
-                  icon={<UserOutlined style={{ fontSize: '18px', color: 'white' }} />}
-                />
-              </Dropdown>
-            </Menu.Item>
-          )}
-        </Menu>
+          items={[
+            {
+              key: 'home',
+              label: (
+                <NavLink
+                  to="/"
+                  style={({ isActive }) => ({
+                    color: isActive ? '#ff9900' : 'white',
+                  })}
+                >
+                  Home
+                </NavLink>
+              ),
+            },
+            {
+              key: 'cart',
+              label: (
+                <NavLink
+                  to="/cart"
+                  style={({ isActive }) => ({
+                    color: isActive ? '#ff9900' : 'white',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 6,
+                    textDecoration: 'none',
+                  })}
+                >
+                  <span>Cart</span>
+                  <Badge count={cartQuantity} overflowCount={99} offset={[4, -10]} />
+                </NavLink>
+              ),
+            },
+            !user
+              ? {
+                  key: 'login',
+                  label: (
+                    <NavLink to="/login" style={{ color: 'white' }}>
+                      <LoginOutlined style={{ fontSize: '18px' }} />
+                    </NavLink>
+                  ),
+                }
+              : {
+                  key: 'user',
+                  label: (
+                    <Dropdown overlay={userMenu} placement="bottomRight">
+                      <Button
+                        type="text"
+                        icon={<UserOutlined style={{ fontSize: '18px', color: 'white' }} />}
+                      />
+                    </Dropdown>
+                  ),
+                },
+          ].filter(Boolean)} // <-- important to filter null if user not loaded yet
+        />
       </div>
     </Header>
   );
