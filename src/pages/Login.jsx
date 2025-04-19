@@ -2,6 +2,7 @@
 import { Form, Input, Button, Card, Typography } from 'antd';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { Helmet } from 'react-helmet';
 import bcrypt from 'bcryptjs';
 import { generateJWT } from '../utils/jwt'; // Import the JWT sign function
 
@@ -52,6 +53,11 @@ const Login = () => {
   };
 
   return (
+    <>
+      <Helmet>
+        <title>Login | Alfa Store</title>
+        <meta name="description" content="Manage your Alfa Store account, orders, and preferences." />
+      </Helmet>
     <div className="py-28 flex justify-center items-center bg-gray-100 px-5">
       <Card className="w-full max-w-md shadow-lg">
         <Title level={2}>Welcome Back</Title>
@@ -86,6 +92,7 @@ const Login = () => {
         </Form>
       </Card>
     </div>
+    </>
   );
 };
 

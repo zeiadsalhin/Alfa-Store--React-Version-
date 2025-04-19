@@ -1,6 +1,7 @@
 import { Form, Input, Button, Card, Typography, message, Checkbox } from 'antd';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { Helmet } from 'react-helmet';
 import bcrypt from 'bcryptjs';
 
 const { Title } = Typography;
@@ -56,6 +57,11 @@ const Signup = () => {
   };
 
   return (
+    <>
+      <Helmet>
+        <title>Signup | Alfa Store</title>
+        <meta name="description" content="Manage your Alfa Store account, orders, and preferences." />
+      </Helmet>
     <div className="py-28 flex justify-center items-center bg-gray-100 px-5">
       <Card className="w-full max-w-md shadow-lg">
         <Title level={2}>Create an Account</Title>
@@ -93,6 +99,7 @@ const Signup = () => {
         </Form>
       </Card>
     </div>
+    </>
   );
 };
 
