@@ -1,6 +1,8 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { useLayoutEffect } from "react";
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
 import StickyHeader from './components/StickyHeader';
+// import useScrollToTop from './hooks/useScrollToTop'; // Adjust the path based on where you save the hook
 import Cart from './pages/Cart';
 import { Layout } from 'antd'; // Import Badge
 import ProductPage from './pages/ProductPage'; // Import ProductPage
@@ -27,9 +29,23 @@ import Users from './admin/pages/Users';
 
 const { Content } = Layout;
 
+// It scrolls to the top of the page whenever the route changes
+const Wrapper = ({ children }) => {
+  const location = useLocation();
+
+  useLayoutEffect(() => {
+    // Scroll to the top of the page when the route changes
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });    
+  }, [location.pathname]);
+
+  return children;
+};
+
 const App = () => {
   return (
     <Router>
+      <Wrapper>
+
       <Layout style={{ minHeight: '100vh', minWidth: '99vw', marginTop: "3.5rem" }}>
         
         <StickyHeader />
@@ -73,6 +89,7 @@ const App = () => {
         </Content>
         <Footer />
       </Layout>
+      </Wrapper>
     </Router>
   );
 };

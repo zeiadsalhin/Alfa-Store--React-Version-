@@ -35,8 +35,17 @@ const ProductPage = () => {
   }, [id]);
 
   if (loading) {
-    return <Spin size="large" style={{ textAlign: 'center', marginTop: '20%' }} />;
-  }
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        height: '100vh'
+      }}>
+        <Spin size="large" />
+      </div>
+    );
+  } 
 
   if (error) {
     return <Alert message={error} type="error" showIcon style={{ marginTop: '20%' }} />;
