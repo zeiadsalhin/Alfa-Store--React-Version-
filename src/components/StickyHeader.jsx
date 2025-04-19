@@ -1,9 +1,9 @@
-// components/StickyHeader.jsx
 import { Layout, Menu, Badge, Dropdown, Button } from 'antd';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useCart } from '../store/useCart';
 import { UserOutlined, LoginOutlined } from '@ant-design/icons';
+import { useMediaQuery } from 'react-responsive';
 
 const { Header } = Layout;
 
@@ -15,6 +15,7 @@ const StickyHeader = () => {
     state.cart.reduce((total, item) => total + item.quantity, 0)
   );
   const navigate = useNavigate();
+  const isMobile = useMediaQuery({ maxWidth: 768 });
 
   useEffect(() => {
     const handleScroll = () => {
@@ -53,6 +54,16 @@ const StickyHeader = () => {
     </Menu>
   );
 
+  const LogoSvg = () => (
+    <svg width="36" height="36" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="14" width="60" height="38" rx="6" ry="6" stroke="white" strokeWidth="4" fill="#001529"/>
+      <path d="M10 24H54V40H10V24Z" fill="#ff9900" />
+      <circle cx="20" cy="32" r="4" fill="white" />
+      <circle cx="44" cy="32" r="4" fill="white" />
+      <path d="M22 50L28 34H36L42 50" stroke="white" strokeWidth="3" strokeLinecap="round" />
+    </svg>
+  );
+
   return (
     <Header
       style={{
@@ -75,8 +86,8 @@ const StickyHeader = () => {
         }}
       >
         <div style={{ fontSize: '24px', color: '#fff', fontWeight: 'bold' }}>
-          <NavLink to="/" style={{ color: '#fff', textDecoration: 'none' }}>
-            Alfa Store
+          <NavLink to="/" style={{ color: '#fff', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8 }}>
+            {isMobile ? <LogoSvg /> : 'Alfa Store'}
           </NavLink>
         </div>
 
@@ -116,23 +127,21 @@ const StickyHeader = () => {
           </Menu.Item>
 
           {!user ? (
-          <>
             <Menu.Item key="login">
               <NavLink to="/login" style={{ color: 'white' }}>
                 <LoginOutlined style={{ fontSize: '18px' }} />
               </NavLink>
             </Menu.Item>
-          </>
-        ) : (
-          <Menu.Item key="user">
-            <Dropdown overlay={userMenu} placement="bottomRight">
-              <Button
-                type="text"
-                icon={<UserOutlined style={{ fontSize: '18px', color: 'white' }} />}
-              />
-            </Dropdown>
-          </Menu.Item>
-        )}
+          ) : (
+            <Menu.Item key="user">
+              <Dropdown overlay={userMenu} placement="bottomRight">
+                <Button
+                  type="text"
+                  icon={<UserOutlined style={{ fontSize: '18px', color: 'white' }} />}
+                />
+              </Dropdown>
+            </Menu.Item>
+          )}
         </Menu>
       </div>
     </Header>
