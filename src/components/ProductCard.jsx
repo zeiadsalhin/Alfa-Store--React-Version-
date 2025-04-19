@@ -15,31 +15,22 @@ const ProductCard = ({ product }) => {
           <img
             alt={`Image of ${product.title}`}
             src={product.image}
-            style={{
-              width: '100%',
-              height: '250px',
-              objectFit: 'cover',
-            }}
+            className="w-full max-h-[250px] object-cover"
           />
         </Link>
       }
-      style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
+      className="h-full flex flex-col justify-between"
     >
       <Meta 
         title={
-          <div style={{ 
-            maxHeight: '3rem', 
-            overflow: 'hidden', 
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap' 
-          }}>
+          <div className="max-h-12 overflow-hidden truncate whitespace-nowrap">
             {product.title}
           </div>
         } 
         description={`$${product.price}`} 
       />
 
-      <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+      <div className="mt-[10px] flex flex-col gap-2">
         <Button block type="primary" onClick={() => addToCart(product)}>
           Add to Cart
         </Button>

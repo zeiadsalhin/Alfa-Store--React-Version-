@@ -113,33 +113,26 @@ const Home = () => {
         <meta name="description" content="Welcome to Alfa Store, your one-stop-shop for electronics, fashion, and more!" />
       </Helmet>
 
-      <Layout style={{ minHeight: '100vh' }}>
-        <Content style={{ padding: '20px' }}>
-          <Space direction="vertical" style={{ width: '100%' }}>
-            <h1 style={{ textAlign: 'center', fontSize: '3rem', fontWeight: 'bold', color: '#333' }}>
+      <Layout className="min-h-screen">
+        <Content className="p-5">
+          <Space direction="vertical" className="w-full">
+            <h1 className="text-center text-3xl font-bold text-gray-800">
               Alfa Store
             </h1>
 
             {/* Search + Category + View Mode + Sort By */}
-            <div style={{
-              display: 'flex',
-              justifyContent: 'center',
-              flexWrap: 'wrap',
-              gap: '12px',
-              marginBottom: '20px',
-              marginTop: '20px'
-            }}>
+            <div className="flex justify-center flex-wrap gap-3 my-5">
               <Input
                 placeholder="Search products..."
                 onChange={handleSearch}
-                style={{ width: '100%', maxWidth: '300px' }}
+                className="w-full max-w-[300px]"
               />
 
               <Select
                 placeholder="Select Category"
                 onChange={handleCategoryChange}
                 value={selectedCategory}
-                style={{ width: '100%', maxWidth: '180px' }}
+                className="w-full max-w-[160px]"
               >
                 <Option value="">All Categories</Option>
                 {categories.map((category) => (
@@ -152,7 +145,7 @@ const Home = () => {
               <Select
                 value={viewMode}
                 onChange={setViewMode}
-                style={{ width: '100%', maxWidth: '160px' }}
+                className="w-full max-w-[130px]"
               >
                 <Option value="grid">Grid View</Option>
                 <Option value="list">List View</Option>
@@ -161,7 +154,7 @@ const Home = () => {
               <Select
                 value={sortBy}
                 onChange={handleSortChange}
-                style={{ width: '100%', maxWidth: '180px' }}
+                className="w-full max-w-[300px]"
               >
                 <Option value="default">Sort By: Default</Option>
                 <Option value="price-low-high">Price: Low to High</Option>
@@ -176,12 +169,12 @@ const Home = () => {
             ) : (
               <>
                 {/* Featured Products with Custom Arrows */}
-                <section style={{ background: '#f8f8f8', padding: '20px 0', borderRadius: '8px', position: 'relative' }}>
-                  <h2 style={{
-                    textAlign: 'center', marginBottom: '20px', color: '#99050d', fontSize: '2rem', fontWeight: 'bold'
-                  }}>Featured Products</h2>
+                <section className="bg-gray-100 py-5 rounded-lg relative">
+                  <h2 className="text-center mb-5 text-[#99050d] text-2xl font-bold">
+                    Featured Products
+                  </h2>
 
-                  <div style={{ position: 'relative'}}>
+                  <div className="relative">
                     {/* Left Arrow */}
                     <Button
                       type="primary"
@@ -228,10 +221,10 @@ const Home = () => {
                 <Divider />
 
                 {/* Best Sellers */}
-                <section style={{ background: '#fff', padding: '40px 0', borderRadius: '8px' }}>
-                  <h2 style={{
-                    textAlign: 'center', marginBottom: '20px', color: '#111', fontSize: '2rem', fontWeight: 'bold'
-                  }}>Best Sellers</h2>
+                <section className="bg-white py-10 rounded-lg">
+                  <h2 className="text-center mb-5 text-gray-800 text-2xl font-bold">
+                    Best Sellers
+                  </h2>
                   <Row gutter={[16, 16]} justify="center">
                     {sortedProducts.slice(0, 6).map((product) => (
                       <Col key={product.id} xs={24} sm={12} md={8} lg={6} xl={4}>
@@ -244,10 +237,10 @@ const Home = () => {
                 <Divider />
 
                 {/* Special Offers */}
-                <section style={{ background: '#fffae6', padding: '40px 0', borderRadius: '8px' }}>
-                  <h2 style={{
-                    textAlign: 'center', marginBottom: '20px', color: '#99050d', fontSize: '2rem', fontWeight: 'bold'
-                  }}>Special Offers</h2>
+                <section className="bg-[#fffae6] py-10 rounded-lg">
+                  <h2 className="text-center mb-5 text-[#99050d] text-2xl font-bold">
+                    Special Offers
+                  </h2>
                   <Row gutter={[16, 16]} justify="center">
                     {sortedProducts.slice(10, 16).map((product) => (
                       <Col key={product.id} xs={24} sm={12} md={8} lg={6} xl={4}>
@@ -260,10 +253,10 @@ const Home = () => {
                 <Divider />
 
                 {/* Customer Reviews */}
-                <section style={{ background: '#e6f7ff', padding: '40px 0', borderRadius: '8px' }}>
-                  <h2 style={{
-                    textAlign: 'center', marginBottom: '20px', color: '#0066cc', fontSize: '2rem', fontWeight: 'bold'
-                  }}>Customer Reviews</h2>
+                <section className="bg-[#e6f7ff] py-10 rounded-lg">
+                  <h2 className="text-center mb-5 text-[#0066cc] text-2xl font-bold">
+                    Customer Reviews
+                  </h2>
                   <Row gutter={[16, 16]} justify="center">
                     {sortedProducts.slice(0, 4).map((product) => (
                       <Col key={product.id} xs={24} sm={12} md={8} lg={6} xl={4}>
@@ -275,9 +268,9 @@ const Home = () => {
 
                 <Divider />
                 
-                <h2 style={{
-                    textAlign: 'center', marginBottom: '20px', color: '#0066cc', fontSize: '2rem', fontWeight: 'bold'
-                  }}>More Products</h2>
+                <h2 className="text-center mb-5 text-[#0066cc] text-2xl font-bold">
+                  More Products
+                </h2>
 
                 {/* View Mode Content */}
                 {viewMode === 'grid' && (
@@ -294,7 +287,7 @@ const Home = () => {
                 )}
 
                 {viewMode === 'list' && (
-                  <Space direction="vertical" style={{ width: '100%' }}>
+                  <Space direction="vertical" className="w-full">
                     {sortedProducts.map((product) => (
                       <ProductCard
                         key={product.id}
@@ -314,7 +307,7 @@ const Home = () => {
         <FloatButton
           icon={<ArrowUpOutlined />}
           type="primary"
-          style={{ right: 24, bottom: 24 }}
+          className="absolute right-6 bottom-6"
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         />
       )}

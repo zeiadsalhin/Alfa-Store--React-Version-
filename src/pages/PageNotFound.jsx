@@ -11,49 +11,26 @@ const PageNotFound = () => {
   };
 
   return (
-    <div style={styles.container}>
+    <div className="flex justify-center items-center bg-gray-100 flex-col p-5 mt-8">
       <Helmet>
-        <title>404 - Page Not Found | Alfa Store</title>
+        <title className='text-xl'>404 - Page Not Found | Alfa Store</title>
         <meta name="description" content="Oops! The page you are looking for does not exist." />
       </Helmet>
 
-      <div style={styles.content}>
-        <h1 style={styles.title}>404 Page Not Found</h1>
-        <p style={styles.message}>The page you are looking for doesn&apos;t exist.</p>
-        <Button type="primary" size="large" onClick={goHome} style={styles.button}>Go Back to Home</Button>
+      <div className="text-center max-w-2xl p-8">
+        <h1 className="text-4xl font-bold">404 Page Not Found</h1>
+        <p className="text-lg text-gray-600 my-5">The page you are looking for doesn&apos;t exist.</p>
+        <Button
+          type="primary"
+          size="large"
+          onClick={goHome}
+          className="mt-5"
+        >
+          Go Back to Home
+        </Button>
       </div>
     </div>
   );
-};
-
-// Inline styles for better control over design
-const styles = {
-  container: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f5f5f5',
-    flexDirection: 'column',
-    padding: '20px',
-    marginTop: '2rem',
-  },
-  content: {
-    textAlign: 'center',
-    maxWidth: '600px',
-    padding: '30px',
-  },
-  title: {
-    fontSize: '48px',
-    fontWeight: 'bold',
-  },
-  message: {
-    fontSize: '20px',
-    color: '#595959',
-    margin: '20px 0',
-  },
-  button: {
-    marginTop: '20px',
-  }
 };
 
 export default PageNotFound;
