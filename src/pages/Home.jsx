@@ -1,66 +1,30 @@
-import { useEffect, useState, useRef } from 'react';
-import { Row, Col, Layout, Spin, Input, Space, Select } from 'antd';
+import { useState, useRef } from 'react';
+import { Row, Col, Layout, Spin, Input, Space, Select, Button } from 'antd';
 import ProductCard from '../components/ProductCard';
 import { Helmet } from 'react-helmet';
+import { useQuery } from '@tanstack/react-query';
+import Slider from 'react-slick';
+import "slick-carousel/slick/slick.css"; 
+import "slick-carousel/slick/slick-theme.css";
 
 const { Content } = Layout;
 const { Option } = Select;
 
 const Home = () => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState(""); // State for category selection
-  const [visibleProducts, setVisibleProducts] = useState(10); // Start by showing 10 products
-  const observer = useRef(null); // Reference for the IntersectionObserver
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [viewMode, setViewMode] = useState('slider'); // slider, grid, list
+  const sliderRef = useRef(null);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch('https://fakestoreapi.com/products');
-        const data = await response.json();
-        setProducts(data);
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
-
-  useEffect(() => {
-    // Setup IntersectionObserver to load more products when the last product comes into view
-    const observerCallback = (entries) => {
-      const entry = entries[0];
-      if (entry.isIntersecting) {
-        setVisibleProducts((prev) => Math.min(prev + 10, products.length)); // Load next 10 products
-      }
-    };
-
-    const options = {
-      rootMargin: '0px',
-      threshold: 1.0, // 100% of the target element must be visible
-    };
-
-    observer.current = new IntersectionObserver(observerCallback, options);
-
-    if (observer.current) {
-      const lastProduct = document.querySelector('#last-product');
-      if (lastProduct) {
-        observer.current.observe(lastProduct);
-      }
-    }
-
-    // Clean up observer on component unmount
-    return () => {
-      if (observer.current) {
-        observer.current.disconnect();
-      }
-    };
-  }, [products]);
+  // Fetch products with TanStack Query
+  const { data: products = [], isLoading } = useQuery({
+    queryKey: ['products'],
+    queryFn: async () => {
+      const res = await fetch('https://fakestoreapi.com/products');
+      return res.json();
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes cache
+  });
 
   const handleSearch = (e) => {
     setSearchQuery(e.target.value.toLowerCase());
@@ -70,83 +34,135 @@ const Home = () => {
     setSelectedCategory(value);
   };
 
-  // Filter products by search query and selected category
   const filteredProducts = products
     .filter((product) => product.title.toLowerCase().includes(searchQuery))
     .filter((product) =>
       selectedCategory ? product.category === selectedCategory : true
     );
 
-  // Get unique categories from the products
   const categories = [...new Set(products.map((product) => product.category))];
+
+  const settings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 4,
+    slidesToScroll: 1,
+    arrows: true,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: { slidesToShow: 3 }
+      },
+      {
+        breakpoint: 768,
+        settings: { slidesToShow: 2 }
+      },
+      {
+        breakpoint: 480,
+        settings: { slidesToShow: 1 }
+      }
+    ]
+  };
 
   return (
     <>
       <Helmet>
         <title>Home | Alfa Store</title>
-        <meta name="description" content="Welcome to Alfa Store, your one-stop-shop for all things amazing!" />
+        <meta name="description" content="Welcome to Alfa Store, your one-stop-shop for electronics, fashion, and more!" />
       </Helmet>
-    <Layout style={{ minHeight: '100vh' }}>
-      <Content style={{ padding: '50px' }}>
-        <Space direction="vertical" style={{ width: '100%' }}>
-          <h1 style={{ textAlign: 'center', fontSize: '2rem', fontWeight: 'bold' }}>Alfa Store</h1>
 
-          {/* Search and Category Filter Row */}
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'center', 
-            gap: '16px', 
-            marginBottom: '20px',
-            marginTop: '20px',
-            flexWrap: 'wrap',
-          }}>
-            {/* Search Input */}
-            <Input
-              placeholder="Search products..."
-              onChange={handleSearch}
-              style={{
-                width: '100%',
-                maxWidth: '400px',
-              }}
-            />
+      <Layout style={{ minHeight: '100vh' }}>
+        <Content style={{ padding: '20px' }}>
+          <Space direction="vertical" style={{ width: '100%' }}>
+            <h1 style={{ textAlign: 'center', fontSize: '2.5rem', fontWeight: 'bold' }}>
+              Alfa Store
+            </h1>
 
-            {/* Category Select Dropdown */}
-            <Select
-              placeholder="Select Category"
-              style={{ width: '100%', maxWidth: '200px' }}
-              onChange={handleCategoryChange}
-              value={selectedCategory}
-            >
-              <Option value="">All Categories</Option>
-              {categories.map((category) => (
-                <Option key={category} value={category}>
-                  {category}
-                </Option>
-              ))}
-            </Select>
-          </div>
+            {/* Search + Category + View Mode */}
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              flexWrap: 'wrap',
+              gap: '12px',
+              marginBottom: '20px',
+              marginTop: '20px'
+            }}>
+              <Input
+                placeholder="Search products..."
+                onChange={handleSearch}
+                style={{ width: '100%', maxWidth: '300px' }}
+              />
 
-          {/* Loading Spinner or Products */}
-          {loading ? (
-            <Spin size="large" style={{ display: 'block', margin: '0 auto' }} />
-          ) : (
-            <Row gutter={[16, 16]} justify="center">
-              {filteredProducts.slice(0, visibleProducts).map((product) => (
-                <Col
-                  key={product.id}
-                  xs={24} sm={12} md={8} lg={6} xl={4} // Responsive breakpoints
-                >
-                  <ProductCard product={product} />
-                </Col>
-              ))}
-            </Row>
-          )}
+              <Select
+                placeholder="Select Category"
+                onChange={handleCategoryChange}
+                value={selectedCategory}
+                style={{ width: '100%', maxWidth: '180px' }}
+              >
+                <Option value="">All Categories</Option>
+                {categories.map((category) => (
+                  <Option key={category} value={category}>
+                    {category}
+                  </Option>
+                ))}
+              </Select>
 
-          {/* Invisible Div to trigger intersection observer when the last product is visible */}
-          <div id="last-product" style={{ height: '1px' }} />
-        </Space>
-      </Content>
-    </Layout>
+              <Select
+                value={viewMode}
+                onChange={setViewMode}
+                style={{ width: '100%', maxWidth: '160px' }}
+              >
+                <Option value="slider">Slider View</Option>
+                <Option value="grid">Grid View</Option>
+                <Option value="list">List View</Option>
+              </Select>
+            </div>
+
+            {/* Loading */}
+            {isLoading ? (
+              <Spin size="large" style={{ display: 'block', margin: '0 auto' }} />
+            ) : (
+              <>
+                {viewMode === 'slider' && (
+                  <Slider {...settings} ref={sliderRef}>
+                    {filteredProducts.map((product) => (
+                      <div key={product.id} style={{ padding: '0 10px' }}>
+                        <ProductCard product={product} />
+                      </div>
+                    ))}
+                  </Slider>
+                )}
+
+                {viewMode === 'grid' && (
+                  <Row gutter={[16, 16]} justify="center">
+                    {filteredProducts.map((product) => (
+                      <Col
+                        key={product.id}
+                        xs={24} sm={12} md={8} lg={6} xl={4}
+                      >
+                        <ProductCard product={product} />
+                      </Col>
+                    ))}
+                  </Row>
+                )}
+
+                {viewMode === 'list' && (
+                  <Space direction="vertical" style={{ width: '100%' }}>
+                    {filteredProducts.map((product) => (
+                      <ProductCard
+                        key={product.id}
+                        product={product}
+                        listView // Pass prop to make the card full-width
+                      />
+                    ))}
+                  </Space>
+                )}
+              </>
+            )}
+          </Space>
+        </Content>
+      </Layout>
     </>
   );
 };
