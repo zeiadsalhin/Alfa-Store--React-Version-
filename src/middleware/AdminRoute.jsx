@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import DashboardLayout from '../admin/DashboardLayout';
@@ -8,7 +9,7 @@ const AdminRoute = () => {
   const [loading, setLoading] = useState(true); // Loading state for async JWT verification
   const [isAdmin, setIsAdmin] = useState(false); // State to track if the user is an admin
   
-  const token = localStorage.getItem('token'); // Retrieve JWT token from localStorage
+  const token = Cookies.get('token'); // Retrieve JWT token from cookies
 
   useEffect(() => {
     const verifyAdmin = async () => {

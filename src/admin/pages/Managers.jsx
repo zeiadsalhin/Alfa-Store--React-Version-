@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie';
 import {
   Card,
   Table,
@@ -28,7 +29,7 @@ const Managers = () => {
 
   useEffect(() => {
     const initUser = async () => {
-      const token = localStorage.getItem('token');
+      const token = Cookies.get('token');
       if (token) {
         const payload = await verifyJWT(token);
         if (payload?.id) {

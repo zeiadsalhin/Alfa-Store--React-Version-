@@ -1,4 +1,5 @@
 // src/pages/Account.jsx
+import Cookies from 'js-cookie';
 import { Collapse, Typography, Divider, Card, Space, Button } from 'antd';
 import Orders from '../components/account/Orders';
 import CartSection from '../components/account/CartSection';
@@ -20,19 +21,19 @@ const Account = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const storedToken = localStorage.getItem('token');
+      const storedToken = Cookies.get('token');
       if (storedToken) {
         try {
           const payload = await verifyJWT(storedToken); // Wait for the JWT verification to complete
           if (payload) {
             setUser(payload); // Set user state to the decoded JWT payload
           } else {
-            localStorage.removeItem('token'); // Remove invalid token
+            Cookies.remove('token', { path: '/' }); // Remove invalid token
             navigate('/login'); // Redirect to login if verification fails
           }
         } catch (error) {
           console.error('JWT verification failed:', error);
-          localStorage.removeItem('token');
+          Cookies.remove('token', { path: '/' });
           navigate('/login');
         }
       } else {
@@ -44,7 +45,7 @@ const Account = () => {
   }, [navigate]);
 
   const handleSignOut = () => {
-    localStorage.removeItem('token');
+    Cookies.remove('token', { path: '/' });
     navigate('/login');
   };
 

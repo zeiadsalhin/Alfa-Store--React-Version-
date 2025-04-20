@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie';
 import { Card, Table, Button, Typography, Tag, Image, Spin, Modal, Form, Input, notification, Select } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { useState, useEffect } from 'react';
@@ -17,7 +18,7 @@ const Products = () => {
 
   useEffect(() => {
     const initUser = async () => {
-      const token = localStorage.getItem('token');
+      const token = Cookies.get('token');
       if (token) {
         const payload = await verifyJWT(token);
         if (payload?.id) {

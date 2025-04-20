@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { Spin } from 'antd';
@@ -7,7 +8,7 @@ const AuthRoute = ({ children }) => {
   const [loading, setLoading] = useState(true); // Track loading state for async token verification
   const [user, setUser] = useState(null);
   
-  const token = localStorage.getItem('token'); // Get the token from localStorage
+  const token = Cookies.get('token'); // Retrieve JWT token from cookies
 
   useEffect(() => {
     const verifyUserToken = async () => {

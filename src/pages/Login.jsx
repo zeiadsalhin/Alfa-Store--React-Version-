@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie';
 import { Form, Input, Button, Card, Typography } from 'antd';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
@@ -38,8 +39,12 @@ const Login = () => {
       // Call the signJWT utility function to generate the JWT
       const token = await generateJWT(payload);
 
-      // Store the token in localStorage
-      localStorage.setItem('token', token);
+      // Store token securely in a cookie
+      Cookies.set('token', token, {
+        secure: true, // only send over HTTPS
+        sameSite: 'Strict', // CSRF protection
+        expires: 7, // 7 day expiration
+      });
 
       // Redirect to the account page
       navigate('/account');
