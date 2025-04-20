@@ -147,7 +147,9 @@ const DashboardHome = () => {
     // Remove token info from cookies
     Cookies.remove('token', { path: '/' });
     // Redirect to login page
-    navigate('/login');
+    setTimeout(() => {
+      navigate('/login');
+    }, 1000);
   };
 
   return (

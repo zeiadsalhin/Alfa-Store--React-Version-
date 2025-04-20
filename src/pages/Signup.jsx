@@ -47,12 +47,16 @@ const Signup = () => {
       localStorage.setItem('users', JSON.stringify(users));
 
       message.success('Account created successfully!');
-      navigate('/login');
+      setTimeout(() => {
+        navigate('/login');
+      }, 1500);
     } catch (error) {
       console.error('Signup error:', error);
       message.error('Something went wrong!');
     } finally {
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 1500);
     }
   };
 

@@ -46,7 +46,9 @@ const Account = () => {
 
   const handleSignOut = () => {
     Cookies.remove('token', { path: '/' });
-    navigate('/login');
+    setTimeout(() => {
+      navigate('/login');
+    }, 1000);
   };
 
   return (

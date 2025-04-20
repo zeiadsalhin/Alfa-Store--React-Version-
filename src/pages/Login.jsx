@@ -46,13 +46,17 @@ const Login = () => {
         expires: 7, // 7 day expiration
       });
 
-      // Redirect to the account page
-      navigate('/account');
+      // Redirect to the account page with simulating delay
+      setTimeout(() => {
+        navigate('/account');
+      }, 1500);
     } catch (error) {
       setFormError({ email: 'Something went wrong. Please try again.' });
       console.error('Login error:', error);
     } finally {
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 1500);
     }
   };
 
@@ -85,20 +89,33 @@ const Login = () => {
             <Form.Item 
               label="Email" 
               name="email" 
-              rules={[{ required: true, message: 'Please input your email!' }, { type: 'email', message: 'Please input a valid email!' }]} 
-              validateStatus={formError.email && 'error'}
-              help={formError.email}
+              validateStatus={formError.email ? 'error' : ''}
+              help={formError.email || ''}
+              rules={[{ required: true, message: 'Please input your email!' }]}
             >
-              <Input />
+              <Input
+                onChange={() => {
+                  if (formError.email) {
+                    setFormError((prev) => ({ ...prev, email: null }));
+                  }
+                }}
+              />
             </Form.Item>
+
             <Form.Item 
               label="Password" 
-              name="password" 
-              rules={[{ required: true, message: 'Please input your password!' }]} 
-              validateStatus={formError.password && 'error'}
-              help={formError.password}
+              name="password"
+              validateStatus={formError.password ? 'error' : ''}
+              help={formError.password || ''}
+              rules={[{ required: true, message: 'Please input your password!' }]}
             >
-              <Input.Password />
+              <Input.Password
+                onChange={() => {
+                  if (formError.password) {
+                    setFormError((prev) => ({ ...prev, password: null }));
+                  }
+                }}
+              />
             </Form.Item>
             <Form.Item>
               <Button type="primary" htmlType="submit" block loading={loading}>
