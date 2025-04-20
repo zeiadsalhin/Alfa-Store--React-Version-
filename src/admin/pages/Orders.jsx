@@ -1,11 +1,40 @@
-import { Card, Table, Typography, Tag, Button, Modal } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { Card, Table, Typography, Select, Button, Modal, Tag } from 'antd';
 import { Helmet } from 'react-helmet';
 
 const { Title } = Typography;
+const { Option } = Select;
 
 const Orders = () => {
-  const [orders, setOrders] = useState([
+  const [orders, setOrders] = useState([]);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [status, setStatus] = useState("");
+
+  useEffect(() => {
+    const localOrders = JSON.parse(localStorage.getItem('users_orders'));
+    if (localOrders) {
+      const normalizedOrders = Array.isArray(localOrders) ? localOrders : [localOrders];
+      const mappedOrders = normalizedOrders.map((order, index) => ({
+        key: String(index + 1),
+        orderId: order.orderId || `ORD${index + 100}`,
+        customer: order.order?.name || 'Unknown Customer',
+        status: order.status || 'Processing',
+        total: `$${order.order?.total || 0}`,
+        date: new Date().toISOString().slice(0, 10),
+        items: order.order?.cart.map(item => ({
+          name: item.title,
+          quantity: item.quantity,
+          price: `$${item.price}`,
+        })) || [],
+      }));
+      setOrders(mappedOrders);
+    } else {
+      setOrders(DEFAULT_ORDERS);
+    }
+  }, []);
+
+  const DEFAULT_ORDERS = [
     {
       key: '1',
       orderId: 'ORD001',
@@ -125,10 +154,31 @@ const Orders = () => {
         { name: 'Memory Card', quantity: 1, price: '$25.00' },
       ],
     },
-  ]);
-  
-  const [selectedOrder, setSelectedOrder] = useState(null);
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  ];
+
+  // const handleStatusChange = (value, recordKey) => {
+  //   const updatedOrders = orders.map(order => {
+  //     if (order.key === recordKey) {
+  //       return { ...order, status: value };
+  //     }
+  //     return order;
+  //   });
+  //   setOrders(updatedOrders);
+  //   const usersOrders = updatedOrders.map(order => ({
+  //     orderId: order.orderId,
+  //     order: {
+  //       name: order.customer,
+  //       total: parseFloat(order.total.replace('$', '')),
+  //       cart: order.items.map(item => ({
+  //         title: item.name,
+  //         price: parseFloat(item.price.replace('$', '')),
+  //         quantity: item.quantity,
+  //       })),
+  //     },
+  //     status: order.status,
+  //   }));
+  //   localStorage.setItem('users_orders', JSON.stringify(usersOrders));
+  // };
 
   const columns = [
     {
@@ -146,9 +196,14 @@ const Orders = () => {
       dataIndex: 'status',
       key: 'status',
       render: (status) => {
-        const color =
-          status === 'Delivered' ? 'green' :
-          status === 'Processing' ? 'blue' : 'volcano';
+        let color = "orange";
+        if (status === "Shipped") {
+          color = "blue";
+        } else if (status === "Delivered") {
+          color = "green";
+        } else if (status === "Cancelled") {
+          color = "red";
+        }
         return <Tag color={color}>{status}</Tag>;
       },
     },
@@ -173,6 +228,7 @@ const Orders = () => {
 
   const showOrderDetails = (order) => {
     setSelectedOrder(order);
+    setStatus(order.status);  // Set the initial status for the modal
     setIsModalVisible(true);
   };
 
@@ -181,8 +237,37 @@ const Orders = () => {
     setSelectedOrder(null);
   };
 
+  const handleModalStatusChange = (value) => {
+    setStatus(value);  // Update status when changed inside modal
+  };
+
+  const handleSaveStatus = () => {
+    const updatedOrders = orders.map(order => {
+      if (order.key === selectedOrder.key) {
+        return { ...order, status: status };
+      }
+      return order;
+    });
+    setOrders(updatedOrders);
+    const usersOrders = updatedOrders.map(order => ({
+      orderId: order.orderId,
+      order: {
+        name: order.customer,
+        total: parseFloat(order.total.replace('$', '')),
+        cart: order.items.map(item => ({
+          title: item.name,
+          price: parseFloat(item.price.replace('$', '')),
+          quantity: item.quantity,
+        })),
+      },
+      status: order.status,
+    }));
+    localStorage.setItem('users_orders', JSON.stringify(usersOrders));
+    setIsModalVisible(false);
+  };
+
   const paginationProps = {
-    pageSize: 8, // Show 5 orders per page
+    pageSize: 8,
     total: orders.length,
     showTotal: (total) => `Total ${total} orders`,
   };
@@ -206,30 +291,50 @@ const Orders = () => {
         </Card>
       </div>
 
-      {/* Order Details Modal */}
       <Modal
         title={`Order Details - ${selectedOrder?.orderId}`}
-        visible={isModalVisible}
+        open={isModalVisible}
         onCancel={handleModalClose}
-        footer={null}
+        footer={[
+          <Button key="back" onClick={handleModalClose}>
+            Cancel
+          </Button>,
+          <Button key="submit" type="primary" onClick={handleSaveStatus}>
+            Save Status
+          </Button>,
+        ]}
         width={600}
       >
-        <p><strong>Customer:</strong> {selectedOrder?.customer}</p>
-        <p><strong>Status:</strong> {selectedOrder?.status}</p>
-        <p><strong>Total:</strong> {selectedOrder?.total}</p>
-        <p><strong>Date:</strong> {selectedOrder?.date}</p>
+        {selectedOrder && (
+          <>
+            <p><strong>Customer:</strong> {selectedOrder.customer}</p>
+            <p className='inline-block'><strong className='me-2'>Status:</strong></p>
+            <Select
+              value={status}
+              onChange={handleModalStatusChange}
+              style={{ width: 120 }}
+            >
+              <Option value="Processing">Processing</Option>
+              <Option value="Shipped">Shipped</Option>
+              <Option value="Delivered">Delivered</Option>
+              <Option value="Cancelled">Cancelled</Option>
+            </Select>
+            <p><strong>Total:</strong> {selectedOrder.total}</p>
+            <p><strong>Date:</strong> {selectedOrder.date}</p>
 
-        <Title level={4}>Items</Title>
-        <Table
-          dataSource={selectedOrder?.items}
-          columns={[
-            { title: 'Item Name', dataIndex: 'name', key: 'name' },
-            { title: 'Quantity', dataIndex: 'quantity', key: 'quantity' },
-            { title: 'Price', dataIndex: 'price', key: 'price' },
-          ]}
-          pagination={false}  // Disable pagination for items
-          rowKey="name"
-        />
+            <Title level={4}>Items</Title>
+            <Table
+              dataSource={selectedOrder.items}
+              columns={[
+                { title: 'Item Name', dataIndex: 'name', key: 'name' },
+                { title: 'Quantity', dataIndex: 'quantity', key: 'quantity' },
+                { title: 'Price', dataIndex: 'price', key: 'price' },
+              ]}
+              pagination={false}
+              rowKey="name"
+            />
+          </>
+        )}
       </Modal>
     </>
   );

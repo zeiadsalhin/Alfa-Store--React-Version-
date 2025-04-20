@@ -11,6 +11,8 @@ import PrivacyPolicy from './pages/PrivacyPolicy'; // Import PrivacyPolicy
 import Contact from './pages/Contact'; // Import Contact
 import Footer from './components/Footer';  // Import Footer component
 import Checkout from './pages/Checkout';
+import Confirmation from "./pages/Confirmation";
+import Order from "./pages/Orders";
 import Signup from './pages/Signup';
 import Login from './pages/Login';
 import Account from './pages/Account';
@@ -59,6 +61,8 @@ const App = () => {
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/checkout" element={<Checkout />} />
+            <Route path="/confirmation" element={<Confirmation />} />
+            <Route path="/orders" element={<Order />} />
             {/* Protected Route */}
             <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
             <Route path="/signup" element={<GuestRoute><Signup /></GuestRoute>} />

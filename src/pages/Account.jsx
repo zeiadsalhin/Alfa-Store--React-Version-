@@ -1,7 +1,5 @@
-// src/pages/Account.jsx
 import Cookies from 'js-cookie';
 import { Collapse, Typography, Divider, Card, Space, Button } from 'antd';
-import Orders from '../components/account/Orders';
 import CartSection from '../components/account/CartSection';
 import Favourites from '../components/account/Favourites';
 import TwoFactorAuth from '../components/account/TwoFactorAuth';
@@ -24,12 +22,12 @@ const Account = () => {
       const storedToken = Cookies.get('token');
       if (storedToken) {
         try {
-          const payload = await verifyJWT(storedToken); // Wait for the JWT verification to complete
+          const payload = await verifyJWT(storedToken); // Decode the JWT token          
           if (payload) {
-            setUser(payload); // Set user state to the decoded JWT payload
+            setUser(payload);
           } else {
-            Cookies.remove('token', { path: '/' }); // Remove invalid token
-            navigate('/login'); // Redirect to login if verification fails
+            Cookies.remove('token', { path: '/' });
+            navigate('/login');
           }
         } catch (error) {
           console.error('JWT verification failed:', error);
@@ -37,11 +35,11 @@ const Account = () => {
           navigate('/login');
         }
       } else {
-        navigate('/login'); // Redirect to login if no token is found
+        navigate('/login');
       }
     };
 
-    fetchUser(); // Call the async function to verify the JWT and set the user
+    fetchUser();
   }, [navigate]);
 
   const handleSignOut = () => {
@@ -49,6 +47,10 @@ const Account = () => {
     setTimeout(() => {
       navigate('/login');
     }, 1000);
+  };
+
+  const handleViewOrders = () => {
+    navigate('/orders');
   };
 
   return (
@@ -69,24 +71,27 @@ const Account = () => {
               <Text>{user.username}</Text>
               <Text strong>Email:</Text>
               <Text>{user.email}</Text>
+
+              <Space>
+              <Button type="primary" onClick={handleViewOrders}>
+                View My Orders
+              </Button>
               <Button danger onClick={handleSignOut}>
-                    Logout
-                  </Button>
+                Logout
+              </Button>
+              </Space>
             </Space>
           </Card>
         )}
 
         <Collapse accordion bordered>
-          <Panel header="Orders" key="1">
-            <Orders />
-          </Panel>
-          <Panel header="Cart" key="2">
+          <Panel header="Cart" key="1">
             <CartSection />
           </Panel>
-          <Panel header="Favourites" key="3">
+          <Panel header="Favourites" key="2">
             <Favourites />
           </Panel>
-          <Panel header="Account Settings" key="4">
+          <Panel header="Account Settings" key="3">
             <Divider orientation="left">Two-Factor Authentication</Divider>
             <TwoFactorAuth />
 
