@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie';
 import { useRef, useState } from 'react';
 import { Card, Col, Row, Typography, Button, message, Spin } from 'antd';
 import {
@@ -143,8 +144,8 @@ const DashboardHome = () => {
   };
 
   const handleLogout = () => {
-    // Remove token info from localStorage
-    localStorage.removeItem('token');
+    // Remove token info from cookies
+    Cookies.remove('token', { path: '/' });
     // Redirect to login page
     navigate('/login');
   };
