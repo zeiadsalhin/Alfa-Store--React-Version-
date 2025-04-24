@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useCart } from '../store/useCart';
 import { Button, Card, Col, Row, Spin, Alert, Divider, Typography, Avatar, Rate } from 'antd';
 import { UserOutlined, SettingOutlined, StarFilled } from '@ant-design/icons';
+import useNotify from '../hooks/useNotify'; // Adjust path as needed
 import { Helmet } from 'react-helmet';
 
 const { Title, Text, Paragraph } = Typography;
@@ -14,6 +15,7 @@ const ProductPage = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { notify, contextHolder } = useNotify();  // Destructure notify and contextHolder
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -30,6 +32,13 @@ const ProductPage = () => {
     };
     fetchProduct();
   }, [id]);
+
+  // Trigger notification only when the product is added to the cart
+  const handleAddToCart = (product) => {
+    addToCart(product);
+    notify('success', 'Added to Cart', `${product.title} has been added to your cart.`, 1.5);
+  };
+  
 
   if (loading) {
     return (
@@ -52,6 +61,10 @@ const ProductPage = () => {
         <meta name="description" content="Welcome to Alfa Store, your one-stop-shop for all things amazing!" />
       </Helmet>
 
+      {/* Notification component to show notifications */}
+      {contextHolder}
+
+      {/* <NotificationContextHolder /> */}
       <div style={{ padding: '2rem' }}>
         <Row gutter={[32, 32]} align="top">
           {/* Left Column: Product Image */}
@@ -86,7 +99,7 @@ const ProductPage = () => {
               <Button
                 type="primary"
                 size="large"
-                onClick={() => addToCart(product)}
+                onClick={() => handleAddToCart(product)}
                 style={{ marginTop: '1.5rem', backgroundColor: '#1890ff' }}
               >
                 Add to Cart
