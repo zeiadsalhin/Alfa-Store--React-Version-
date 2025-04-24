@@ -122,11 +122,9 @@ const Login = () => {
                 Sign In
               </Button>
             </Form.Item>
-            <Form.Item>
             <div>
               Don’t have an account? <NavLink to="/signup">Sign Up</NavLink>
             </div>
-            </Form.Item>
           </Form>
         </Card>
       </div>
