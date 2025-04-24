@@ -32,9 +32,9 @@ const Products = () => {
     if (!savedProducts) {
       const defaultProducts = [
         {
-          key: Date.now().toString(),
+          key: (Date.now().toString()) + 'E', // Unique key for example product
           name: 'Smartphone A10',
-          price: '$199.99',
+          price: '199.99',
           stock: 25,
           category: 'Electronics',
           status: 'Active',
@@ -43,7 +43,7 @@ const Products = () => {
         {
           key: Date.now().toString(),
           name: 'Leather Jacket',
-          price: '$89.99',
+          price: '89.99',
           stock: 5,
           category: 'Clothing',
           status: 'Inactive',
@@ -136,7 +136,7 @@ const Products = () => {
       key: 'name',
     },
     {
-      title: 'Price',
+      title: 'Price ($)',
       dataIndex: 'price',
       key: 'price',
     },

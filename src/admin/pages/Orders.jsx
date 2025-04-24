@@ -1,5 +1,9 @@
-import { useEffect, useState } from 'react';
-import { Card, Table, Typography, Select, Button, Modal, Tag } from 'antd';
+import { useEffect, useState, useRef } from 'react';
+import { Card, Table, Typography, Select, Button, Modal, Tag, Divider } from 'antd';
+import {QRCodeSVG} from 'qrcode.react';
+import { generateOrderQRCodeData } from "../../utils/qrCodeData";
+import ShippingQRCode from "../components/ShippingQRCode";
+import { generateShippingLabelWithQRCode } from "../../utils/generateShippingLabelWithQRCode";
 import { Helmet } from 'react-helmet';
 
 const { Title } = Typography;
@@ -10,6 +14,7 @@ const Orders = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [status, setStatus] = useState("");
+  const qrRef = useRef();
 
   useEffect(() => {
     const localOrders = JSON.parse(localStorage.getItem('users_orders'));
@@ -155,6 +160,10 @@ const Orders = () => {
       ],
     },
   ];
+
+  const handlePrint = () => {
+    generateShippingLabelWithQRCode(selectedOrder, qrRef);
+  };
 
   // const handleStatusChange = (value, recordKey) => {
   //   const updatedOrders = orders.map(order => {
@@ -333,6 +342,38 @@ const Orders = () => {
               pagination={false}
               rowKey="name"
             />
+          <div className="mt-4 text-center">
+            {/* Container for the two QR codes */}
+            <div className="flex flex-col md:flex-row justify-center gap-2 md:gap-18 items-center">
+
+              {/* QR Code 1 */}
+              <div className="flex flex-col items-center text-center">
+              <Title level={4}>Order QR Code</Title>
+                <QRCodeSVG
+                  value={generateOrderQRCodeData(selectedOrder).url}
+                  size={160}
+                  marginSize={2}
+                  className="mx-auto my-auto"
+                />
+                <p className="text-xs text-gray-500 mt-4a mb-4a">
+                  Scan to get full order details
+                </p>
+              </div>
+
+              {/* QR Code 2 */}
+              <div className="flex flex-col items-center text-center mt-6">
+                <ShippingQRCode ref={qrRef} data={selectedOrder} />
+
+                {/* Button to print shipping label */}
+                <Button type="primary" onClick={handlePrint} className="my-4">
+                  Print Shipping Label
+                </Button>
+              </div>
+            </div>
+
+            {/* Divider after button */}
+            <Divider className="w-full my-4" />
+          </div>
           </>
         )}
       </Modal>

@@ -16,6 +16,7 @@ import Order from "./pages/Orders";
 import Signup from './pages/Signup';
 import Login from './pages/Login';
 import Account from './pages/Account';
+import OrderDetails from './pages/OrderDetailsPage'; // Import OrderDetailsPage
 import PageNotFound from './pages/PageNotFound';
 import AuthRoute from './middleware/AuthRoute';
 import GuestRoute from './middleware/GuestRoute';
@@ -89,6 +90,8 @@ const App = () => {
               </Route>
             {/* Page Not Found (Wildcard Route) */}
             <Route path="*" element={<PageNotFound />} />
+            {/* Display user order details */}
+            <Route path="/order-details/:token" element={<OrderDetails />} />
           </Routes>
         </Content>
         <Footer />
